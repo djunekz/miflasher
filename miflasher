@@ -5,6 +5,7 @@ from core.unlock import unlock_bootloader
 from core.flash import flash_rom, flash_boot
 from core.payload import flash_payload
 from gui.app import run_gui
+from core.logger import log
 
 def help_msg():
     print("""
