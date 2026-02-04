@@ -1,5 +1,6 @@
 colorama
 pycryptodomex
 fcetool
-miunlock
+requests
 tqdm
+miunlock
