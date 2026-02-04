@@ -1,0 +1,5 @@
+colorama
+pycryptodomex
+fcetool
+miunlock
+tqdm
