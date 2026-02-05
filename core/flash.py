@@ -12,7 +12,13 @@ def flash_rom(rom_path):
     run_cmd(f"pv -bpe '{rom_path}' | tar -xzf- -C {output_dir}", "Extract ROM")
 
     # run flash scripts
-    for script in ["flash_all.sh", "flash_all_lock.sh"]:
+    for script in ["flash_all.sh", "flash_all_lock.sh", "flash_all_except_data_storage.sh"]:
         script_path = os.path.join(output_dir, script)
         if os.path.exists(script_path):
             run_cmd(f"bash {script_path}", f"Flashing {script}")
+
+def flash_boot(boot_img):
+    if not os.path.exists(boot_img):
+        log(f"Boot image not found: {boot_img}", level="error")
+        return
+    run_cmd(f"fastboot flash boot {boot_img}", "Flashing boot image")
