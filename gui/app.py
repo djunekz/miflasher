@@ -1,6 +1,6 @@
 def run_gui():
-    from http.server import HTTPServer, SimpleHTTPRequestHandler
     import threading, webbrowser
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
 
     def open_browser():
         webbrowser.open("http://localhost:8080")
