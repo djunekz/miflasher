@@ -1,8 +1,8 @@
-from core.logger import log
 import subprocess
+from core.logger import log
 
 def run_miunlock():
-    log("Running official MiUnlockTool...")
+    log("Running MiUnlock tool...")
     try:
         subprocess.run(["miunlock"], check=True)
         return True
