@@ -5,6 +5,6 @@ def unlock_bootloader():
     log("Starting bootloader unlock...")
     success = run_miunlock()
     if success:
-        log("Bootloader unlocked successfully", level="success")
+        log("Bootloader unlocked!", level="success")
     else:
-        log("Bootloader unlock failed", level="error")
+        log("Bootloader unlock failed!", level="error")
