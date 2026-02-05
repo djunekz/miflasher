@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 import sys
-from core.device import detect_device
+from core.device import detect_device, show_device_info
 from core.unlock import unlock_bootloader
 from core.flash import flash_rom, flash_boot
 from core.payload import flash_payload
+from core.downloader import download_rom
 from gui.app import run_gui
 from core.logger import log
 
 def help_msg():
     print("""
-MiFlasher - Xiaomi Advanced Tool
+MiFlasher - Xiaomi Advanced Tools
 
 Usage:
-  miflasher device
-  miflasher unlock
-  miflasher flash-rom <rom.zip>
+  miflasher device           # Detect and show device info
+  miflasher unlock           # Unlock bootloader
+  miflasher flash-rom <url>  # Flash ROM from local path or URL
   miflasher flash-boot <boot.img>
   miflasher flash-payload <payload.bin>
-  miflasher gui
+  miflasher gui              # Start web GUI
 """)
 
 if len(sys.argv) < 2:
@@ -27,11 +28,14 @@ if len(sys.argv) < 2:
 cmd = sys.argv[1].lower()
 
 if cmd == "device":
-    detect_device()
+    show_device_info()
 elif cmd == "unlock":
     unlock_bootloader()
 elif cmd == "flash-rom":
-    flash_rom(sys.argv[2])
+    path = sys.argv[2]
+    if path.startswith("http"):
+        path = download_rom(path)
+    flash_rom(path)
 elif cmd == "flash-boot":
     flash_boot(sys.argv[2])
 elif cmd == "flash-payload":
