@@ -13,12 +13,14 @@ def help_msg():
 MiFlasher - Xiaomi Advanced Tools
 
 Usage:
-  miflasher device
-  miflasher unlock
+  miflasher device     (Detect and show device info)
+  miflasher unlock     (Unlock bootloader)
+  miflasher gui        (Start web GUI)
+
+Flash ROM from local path or URL:
   miflasher flash-rom <url>
   miflasher flash-boot <boot.img>
   miflasher flash-payload <payload.bin>
-  miflasher gui
 """)
 
 if len(sys.argv) < 2:
