@@ -1,7 +1,2 @@
-colorama
-pycryptodomex
-fcetool
 requests
-tqdm
-miunlock
-pv
+colorama
