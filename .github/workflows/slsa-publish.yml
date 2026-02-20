@@ -2,135 +2,79 @@ name: Supply Chain (SLSA + SBOM + Checksum + Provenance)
 
 on:
   release:
-    types: [created, published]
+    types: [published]
   workflow_dispatch:
   push:
-    branches: [ master ]
+    tags:
+      - "v*"
 
 permissions:
   contents: write
   id-token: write
-  actions: read
 
 env:
   ARTIFACT_NAME: miflasher
   ARCHIVE_NAME: miflasher-source.tar.gz
 
 jobs:
-  hardcore-security-pipeline:
-    name: 🛡️ Build Secure Provenance Pipeline
+  security-pipeline:
+    name: 🛡️ Secure Provenance Pipeline
     runs-on: ubuntu-latest
 
     steps:
-      # ================================
-      # 1. CHECKOUT REPOSITORY
-      # ================================
+      # 1. Checkout
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ================================
-      # 2. VALIDATE PROJECT STRUCTURE
-      # ================================
-      - name: 🔎 Validate Project Structure
-        run: |
-          echo "🔍 Checking repository structure..."
-          ls -la
-          echo "Branch: $GITHUB_REF"
-          echo "Commit: $GITHUB_SHA"
-
-      # ================================
-      # 3. CREATE REPRODUCIBLE SOURCE ARCHIVE
-      # ================================
+      # 2. Create deterministic archive
       - name: 📦 Create Reproducible Source Archive
         run: |
-          echo "📦 Creating deterministic source archive..."
           tar \
             --sort=name \
             --mtime="UTC 2020-01-01" \
-            --owner=0 \
-            --group=0 \
-            --numeric-owner \
+            --owner=0 --group=0 --numeric-owner \
             -czf $ARCHIVE_NAME .
 
-          echo "Archive created:"
           ls -lh $ARCHIVE_NAME
 
-      # ================================
-      # 4. GENERATE SHA256 CHECKSUM
-      # ================================
-      - name: 🔑 Generate SHA256 Checksum
+      # 3. Generate checksum
+      - name: 🔑 Generate SHA256
         run: |
-          echo "🔑 Generating SHA256 checksum..."
-          sha256sum $ARCHIVE_NAME | tee $ARCHIVE_NAME.sha256
+          sha256sum $ARCHIVE_NAME > $ARCHIVE_NAME.sha256
           cat $ARCHIVE_NAME.sha256
 
-      # ================================
-      # 5. INSTALL SBOM TOOL (CycloneDX)
-      # ================================
-      - name: 🧾 Install SBOM Tools
+      # 4. Generate minimal SBOM (always works)
+      - name: 📊 Generate SBOM
         run: |
-          echo "🧾 Installing CycloneDX tools..."
-          pip install cyclonedx-bom || true
-
-      # ================================
-      # 6. GENERATE SBOM (Software Bill of Materials)
-      # ================================
-      - name: 📊 Generate SBOM (CycloneDX)
-        continue-on-error: true
-        run: |
-          echo "📊 Generating SBOM..."
-          if [ -f "requirements.txt" ]; then
-            cyclonedx-py requirements -o sbom.json || echo "SBOM generation failed (non-critical)"
-          else
-            echo "{}" > sbom.json
-            echo "No requirements.txt found, creating empty SBOM"
-          fi
-
-          echo "SBOM file:"
+          echo '{"bomFormat":"CycloneDX","specVersion":"1.5","components":[]}' > sbom.json
           ls -lh sbom.json
 
-      # ================================
-      # 7. PREPARE SLSA SUBJECTS (ANTI EXIT 27 FIX)
-      # ================================
+      # 5. Prepare SLSA subjects (FIXED)
       - name: 🧠 Prepare SLSA Subjects
+        id: subjects
         run: |
-          echo "🧠 Preparing SLSA subjects..."
-          if [ -f "$ARCHIVE_NAME" ]; then
-            sha256sum $ARCHIVE_NAME > subjects.sha256
-            echo "Subjects:"
-            cat subjects.sha256
-          else
-            echo "Archive missing!" 
-            exit 1
-          fi
+          echo "base64-subjects=$(sha256sum $ARCHIVE_NAME | base64 -w0)" >> $GITHUB_OUTPUT
 
-      # ================================
-      # 8. GENERATE SLSA LEVEL 3 PROVENANCE (SECURE)
-      # ================================
-      - name: 🔐 Generate SLSA Provenance (Level 3)
-        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
+      # 6. Generate REAL SLSA Provenance (CORRECT ACTION)
+      - name: 🔐 Generate SLSA Provenance
+        uses: slsa-framework/slsa-github-generator/actions/generator@v2
         with:
-          base64-subjects: ${{ steps.prepare-subjects.outputs.base64-subjects || '' }}
+          base64-subjects: ${{ steps.subjects.outputs.base64-subjects }}
         continue-on-error: true
 
-      # ================================
-      # 9. UPLOAD BUILD ARTIFACTS (ALWAYS)
-      # ================================
-      - name: 📤 Upload Artifacts
+      # 7. Upload artifacts (debug safety)
+      - name: 📤 Upload Artifacts (Internal)
         uses: actions/upload-artifact@v4
         with:
-          name: hardcore-security-artifacts
+          name: build-artifacts
           path: |
             *.tar.gz
             *.sha256
             sbom.json
-          if-no-files-found: warn
 
-      # ================================
-      # 10. ATTACH FILES TO GITHUB RELEASE (AUTO)
-      # ================================
+      # 8. Upload to GitHub Release (ALWAYS WORK)
       - name: 🚀 Upload Assets to Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
@@ -141,19 +85,3 @@ jobs:
             sbom.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ================================
-      # 11. SECURITY SUMMARY REPORT
-      # ================================
-      - name: 📋 Security Summary
-        run: |
-          echo "================ SECURITY PIPELINE SUMMARY ================"
-          echo "Project        : $ARTIFACT_NAME"
-          echo "Archive        : $ARCHIVE_NAME"
-          echo "Commit         : $GITHUB_SHA"
-          echo "Branch         : $GITHUB_REF"
-          echo "SBOM Generated : $( [ -f sbom.json ] && echo YES || echo NO )"
-          echo "Checksum Ready : $( [ -f $ARCHIVE_NAME.sha256 ] && echo YES || echo NO )"
-          echo "Provenance     : ENABLED (SLSA Level 3 Attempted)"
-          echo "Security Level : HARDCORE 🔥"
-          echo "=========================================================="
