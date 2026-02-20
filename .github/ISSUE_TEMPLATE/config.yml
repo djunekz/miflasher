@@ -1,0 +1,18 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 💬 Tanya & Diskusi Umum
+    url: https://github.com/djunekz/miflasher/discussions
+    about: Punya pertanyaan umum atau ingin diskusi? Gunakan Discussions, bukan Issues.
+
+  - name: 📖 Baca Dokumentasi Dulu
+    url: https://github.com/djunekz/miflasher/blob/main/README.md
+    about: Banyak pertanyaan sudah dijawab di README — cek FAQ-nya dulu!
+
+  - name: 🔧 Panduan Troubleshooting
+    url: https://github.com/djunekz/miflasher/blob/main/TROUBLESHOOTING.md
+    about: Device tidak terdeteksi? Flash gagal? Cek TROUBLESHOOTING.md terlebih dahulu.
+
+  - name: 🔒 Laporkan Celah Keamanan
+    url: https://github.com/djunekz/miflasher/security/advisories/new
+    about: Jangan laporkan vulnerability via Issues publik — gunakan Security Advisory.
