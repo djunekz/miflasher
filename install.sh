@@ -37,7 +37,7 @@ if [ ! -d ~/storage ]; then
 else
   ok "Storage already accessible"
 fi
-mkdir -p ~/storage/downloads/MiFlasher/backups
+mkdir -p ~/storage/shared/Download/MiFlasher/backups
 
 # ── 3. Python deps ───────────────────────────────────────────────────────────
 step "Installing Python packages..."
