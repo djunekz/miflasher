@@ -1,9 +1,6 @@
 <div align="center">
 
 ```md
-
-                                                                         
-                                                                         
 ___       ___    ________ ___                  ___                       
 `MMb     dMM'68b `MMMMMMM `MM                  `MM                       
  MMM.   ,PMM Y89  MM    \  MM                   MM                       
@@ -15,9 +12,7 @@ ___       ___    ________ ___                  ___
  M   YP   MM  MM  MM       MM MM'   MM      `Mb MM    MM MM       MM     
  M   `'   MM  MM  MM       MM MM.  ,MM L    ,MM MM    MM YM    d9 MM     
 _M_      _MM__MM__MM_     _MM_`YMMM9'YbMYMMMM9 _MM_  _MM_ YMMMM9 _MM_    
-                                                                         
-                                                                         
-                                                                         
+
 ```
 
 **Advanced Xiaomi Flash & Unlock Toolkit**
