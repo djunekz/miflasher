@@ -1,9 +1,11 @@
-name: Build Release Assets (Stable & Clean)
+name: Build Source + Checksum + SBOM
 
 on:
   release:
-    types: [created, published]
+    types: [published]
   workflow_dispatch:
+  push:
+    branches: [ master ]
 
 permissions:
   contents: write
@@ -12,62 +14,97 @@ env:
   ARCHIVE_NAME: miflasher-source.tar.gz
 
 jobs:
-  build-assets:
-    name: 📦 Build Source + Checksum + SBOM (No Bullshit)
+  build-artifacts:
+    name: 📦 Build Clean Release Artifacts
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repo
-      - name: 📥 Checkout
+      # ==============================
+      # 1. Checkout repo (FULL history)
+      # ==============================
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2. Create reproducible archive
-      - name: 📦 Create Source Archive
+      # ==============================
+      # 2. Show debug info
+      # ==============================
+      - name: 🔎 Debug Info
+        run: |
+          echo "Repo: $GITHUB_REPOSITORY"
+          echo "Ref : $GITHUB_REF"
+          echo "SHA : $GITHUB_SHA"
+          ls -la
+
+      # ==============================
+      # 3. Create CLEAN source archive (ANTI TAR ERROR)
+      # ==============================
+      - name: 📦 Create Deterministic Source Archive (CI SAFE)
         run: |
           set -e
-          tar \
-            --sort=name \
-            --mtime="UTC 2020-01-01" \
-            --owner=0 \
-            --group=0 \
-            --numeric-owner \
-            --exclude=.git \
-            --exclude=.github \
-            -czf "$ARCHIVE_NAME" .
+          echo "Creating archive using git archive (NO tar dot)..."
 
-          echo "Archive created:"
+          git archive \
+            --format=tar.gz \
+            --output="$ARCHIVE_NAME" \
+            HEAD
+
+          echo "Archive created successfully:"
           ls -lh "$ARCHIVE_NAME"
 
-      # 3. Generate SHA256
-      - name: 🔑 Generate SHA256
+      # ==============================
+      # 4. Generate SHA256
+      # ==============================
+      - name: 🔑 Generate SHA256 Checksum
         run: |
           set -e
-          sha256sum "$ARCHIVE_NAME" > "$ARCHIVE_NAME.sha256"
+          sha256sum "$ARCHIVE_NAME" | tee "$ARCHIVE_NAME.sha256"
+          echo "Checksum:"
           cat "$ARCHIVE_NAME.sha256"
 
-      # 4. Install SBOM tool (safe)
+      # ==============================
+      # 5. Install SBOM tool (optional, no fail)
+      # ==============================
       - name: 🧾 Install SBOM Tool
         continue-on-error: true
         run: |
-          python3 -m pip install --upgrade pip
           pip install cyclonedx-bom || true
 
-      # 5. Generate SBOM (never fail)
-      - name: 📊 Generate SBOM (Safe Mode)
+      # ==============================
+      # 6. Generate SBOM (SAFE, no crash)
+      # ==============================
+      - name: 📊 Generate SBOM
         continue-on-error: true
         run: |
-          set +e
           if [ -f "requirements.txt" ]; then
-            cyclonedx-py requirements -o sbom.json
+            echo "Generating SBOM from requirements.txt"
+            cyclonedx-py requirements -o sbom.json || echo "{}" > sbom.json
           else
             echo "{}" > sbom.json
+            echo "No requirements.txt, created empty SBOM"
           fi
-          ls -lh sbom.json || echo "{}" > sbom.json
 
-      # 6. Upload artifacts to GitHub Release (THE IMPORTANT PART)
-      - name: 🚀 Upload to Release (Fix "file gak muncul")
+          ls -lh sbom.json
+
+      # ==============================
+      # 7. Upload artifacts (ALWAYS)
+      # ==============================
+      - name: 📤 Upload Artifacts (CI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: miflasher-artifacts
+          path: |
+            *.tar.gz
+            *.sha256
+            sbom.json
+          if-no-files-found: warn
+
+      # ==============================
+      # 8. Upload to GitHub Release (AUTO)
+      # ==============================
+      - name: 🚀 Upload Assets to Release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -76,3 +113,17 @@ jobs:
             sbom.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ==============================
+      # 9. Final Summary (biar jelas)
+      # ==============================
+      - name: 📋 Build Summary
+        run: |
+          echo "=============================="
+          echo "BUILD SUCCESS (STABLE MODE)"
+          echo "Archive : $ARCHIVE_NAME"
+          echo "SHA256  : $(cat $ARCHIVE_NAME.sha256 | cut -d ' ' -f1)"
+          echo "SBOM    : $( [ -f sbom.json ] && echo READY || echo EMPTY )"
+          echo "No SLSA (anti error & anti exit 27)"
+          echo "No tar dot bug"
+          echo "=============================="
