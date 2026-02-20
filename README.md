@@ -1,17 +1,16 @@
 <div align="center">
 
 ```md
-___       ___    ________ ___                  ___                       
-`MMb     dMM'68b `MMMMMMM `MM                  `MM                       
- MMM.   ,PMM Y89  MM    \  MM                   MM                       
- M`Mb   d'MM ___  MM       MM    ___     ____   MM  __     ____  ___  __ 
- M YM. ,P MM `MM  MM   ,   MM  6MMMMb   6MMMMb\ MM 6MMb   6MMMMb `MM 6MM 
- M `Mb d' MM  MM  MMMMMM   MM 8M'  `Mb MM'    ` MMM9 `Mb 6M'  `Mb MM69 " 
- M  YM.P  MM  MM  MM   `   MM     ,oMM YM.      MM'   MM MM    MM MM'    
- M  `Mb'  MM  MM  MM       MM ,6MM9'MM  YMMMMb  MM    MM MMMMMMMM MM     
- M   YP   MM  MM  MM       MM MM'   MM      `Mb MM    MM MM       MM     
- M   `'   MM  MM  MM       MM MM.  ,MM L    ,MM MM    MM YM    d9 MM     
-_M_      _MM__MM__MM_     _MM_`YMMM9'YbMYMMMM9 _MM_  _MM_ YMMMM9 _MM_    
+                                                      
+o     o  o  ooooo 8               8                   
+8b   d8     8     8               8                   
+8`b d'8 o8 o8oo   8 .oPYo. .oPYo. 8oPYo. .oPYo. oPYo. 
+8 `o' 8  8  8     8 .oooo8 Yb..   8    8 8oooo8 8  `' 
+8     8  8  8     8 8    8   'Yb. 8    8 8.     8     
+8     8  8  8     8 `YooP8 `YooP' 8    8 `Yooo' 8     
+..::::..:..:..::::..:.....::.....:..:::..:.....:..::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 ```
 
