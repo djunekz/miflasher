@@ -1,0 +1,78 @@
+name: Build Release Assets (Stable & Clean)
+
+on:
+  release:
+    types: [created, published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  ARCHIVE_NAME: miflasher-source.tar.gz
+
+jobs:
+  build-assets:
+    name: 📦 Build Source + Checksum + SBOM (No Bullshit)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Create reproducible archive
+      - name: 📦 Create Source Archive
+        run: |
+          set -e
+          tar \
+            --sort=name \
+            --mtime="UTC 2020-01-01" \
+            --owner=0 \
+            --group=0 \
+            --numeric-owner \
+            --exclude=.git \
+            --exclude=.github \
+            -czf "$ARCHIVE_NAME" .
+
+          echo "Archive created:"
+          ls -lh "$ARCHIVE_NAME"
+
+      # 3. Generate SHA256
+      - name: 🔑 Generate SHA256
+        run: |
+          set -e
+          sha256sum "$ARCHIVE_NAME" > "$ARCHIVE_NAME.sha256"
+          cat "$ARCHIVE_NAME.sha256"
+
+      # 4. Install SBOM tool (safe)
+      - name: 🧾 Install SBOM Tool
+        continue-on-error: true
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install cyclonedx-bom || true
+
+      # 5. Generate SBOM (never fail)
+      - name: 📊 Generate SBOM (Safe Mode)
+        continue-on-error: true
+        run: |
+          set +e
+          if [ -f "requirements.txt" ]; then
+            cyclonedx-py requirements -o sbom.json
+          else
+            echo "{}" > sbom.json
+          fi
+          ls -lh sbom.json || echo "{}" > sbom.json
+
+      # 6. Upload artifacts to GitHub Release (THE IMPORTANT PART)
+      - name: 🚀 Upload to Release (Fix "file gak muncul")
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tar.gz
+            *.sha256
+            sbom.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
