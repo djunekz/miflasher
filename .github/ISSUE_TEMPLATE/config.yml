@@ -6,11 +6,11 @@ contact_links:
     about: Punya pertanyaan umum atau ingin diskusi? Gunakan Discussions, bukan Issues.
 
   - name: 📖 Baca Dokumentasi Dulu
-    url: https://github.com/djunekz/miflasher/blob/main/README.md
+    url: https://github.com/djunekz/miflasher/blob/master/README.md
     about: Banyak pertanyaan sudah dijawab di README — cek FAQ-nya dulu!
 
   - name: 🔧 Panduan Troubleshooting
-    url: https://github.com/djunekz/miflasher/blob/main/TROUBLESHOOTING.md
+    url: https://github.com/djunekz/miflasher/blob/master/TROUBLESHOOTING.md
     about: Device tidak terdeteksi? Flash gagal? Cek TROUBLESHOOTING.md terlebih dahulu.
 
   - name: 🔒 Laporkan Celah Keamanan
