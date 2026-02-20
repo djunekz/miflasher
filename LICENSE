@@ -1,0 +1,42 @@
+MIT License
+
+Copyright (c) 2025 MiFlasher Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ADDITIONAL DISCLAIMER
+
+This software is intended for use on devices you own and have legal rights to
+modify. Flashing firmware or unlocking bootloaders may:
+
+  - Void your device warranty
+  - Permanently damage your device if used incorrectly
+  - Erase all data on your device
+  - Violate your device manufacturer's terms of service
+
+The authors and contributors of MiFlasher are NOT responsible for any damage,
+data loss, bricked devices, or other consequences resulting from the use of
+this software. Use at your own risk.
+
+MiFlasher is not affiliated with, endorsed by, or in any way officially
+connected with Xiaomi Inc., MIUI, or any of their subsidiaries or affiliates.
+All product names, trademarks, and registered trademarks are the property of
+their respective owners.
