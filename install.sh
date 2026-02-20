@@ -50,8 +50,8 @@ pip install miunlock --break-system-packages -q 2>/dev/null && ok "miunlock" || 
 
 # ── 4. Install miflasher ─────────────────────────────────────────────────────
 step "Installing MiFlasher..."
-INSTALL_DIR="$HOME/.local/lib/miflasher"
-BIN_DIR="$HOME/.local/bin"
+INSTALL_DIR="$PREFIX/lib/miflasher"
+BIN_DIR="$PREFIX/bin"
 
 mkdir -p "$INSTALL_DIR" "$BIN_DIR"
 
